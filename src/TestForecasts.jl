@@ -5,5 +5,6 @@ using Statistics
 include("dieboldmariano.jl") 
 
 export
-    dieboldmariano
+    dieboldmariano,
+    pnorm
 end

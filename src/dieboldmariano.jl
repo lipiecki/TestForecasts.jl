@@ -7,9 +7,9 @@ function dieboldmariano(obs::AbstractMatrix{<:AbstractFloat},
             forecast::AbstractMatrix{<:AbstractFloat};
             lossfun::Function = (y, ŷ) -> pnorm(y-ŷ, 2))
     
-    Δ = [lossfun(obs[i], @view(baseforecast[i, :])) for i in axis(baseforecast, 1)]
+    Δ = [lossfun(@view(obs[i, :]), @view(baseforecast[i, :])) for i in axis(baseforecast, 1)]
     for i in axis(forecast, 1)
-        Δ[i] -= lossfun(obs[i], @view(forecast[i, :])) 
+        Δ[i] -= lossfun(@view(obs[i, :]), @view(forecast[i, :])) 
     end
     μ = mean(Δ)
     σ = std(Δ)
