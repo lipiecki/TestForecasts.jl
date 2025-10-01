@@ -1,5 +1,5 @@
 function pnorm(x, p=2)
-    return sum(abs.(x).^p).^(1/p)
+    return sum(abs.(x).^p)^(1/p)
 end
 
 function dieboldmariano(obs::AbstractMatrix{<:AbstractFloat},
