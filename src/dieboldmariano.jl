@@ -13,5 +13,5 @@ function dieboldmariano(obs::AbstractMatrix{<:AbstractFloat},
     end
     μ = mean(Δ)
     σ = std(Δ)
-    return cdf(Normal(0, 1), sqrt(length(Δ))*μ/σ)
+    return 1-cdf(Normal(0, 1), sqrt(length(Δ))*μ/σ)
 end
