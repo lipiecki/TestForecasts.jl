@@ -1,0 +1,10 @@
+name = "TestForecasts"
+uuid = "95d863b1-a657-4c1d-b29b-2e3b0a0dd124"
+authors = ["lipiecki <arkadiusz.lipiecki@pwr.edu.pl>"]
+version = "0.1.0"
+
+[deps]
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+
+[compat]
+Distributions = "0.25.120"
