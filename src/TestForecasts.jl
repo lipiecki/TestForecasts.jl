@@ -1,7 +1,7 @@
 module TestForecasts
 
-using Distributions
-include("utils.jl")
+using Distributions, LinearAlgebra, Statistics
+include("losses.jl")
 include("dieboldmariano.jl") 
 include("kupiec.jl")
 
