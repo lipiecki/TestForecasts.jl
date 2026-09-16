@@ -1,5 +1,6 @@
 """
     kupiec(obs::AbstractVecOrMat{<:Real}, forecast::AbstractVecOrMat{<:Real}, level::AbstractFloat)
+Perform the Kupiec test for unconditional coverage. Tests whether the empirical coverage of quantile `forecast` is consistent with the nominal level `level`.
 """
 function kupiec(obs::AbstractVecOrMat{<:Real}, forecast::AbstractVecOrMat{<:Real}, level::AbstractFloat)
     @assert size(obs) == size(forecast)

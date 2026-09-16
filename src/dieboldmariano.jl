@@ -1,10 +1,11 @@
 """
     dieboldmariano(obs::AbstractVecOrMat{<:Real}, benchmark::AbstractArray{<:Real}, forecast::AbstractArray{<:Real}; loss::Function)
+Perform the Diebold-Mariano test based on the loss differentials computed with `loss`. Tests whether `forecasts` are significantly more accurate than `benchmark`.
 """
 function dieboldmariano(obs::AbstractVecOrMat{<:Real},
             benchmark::AbstractVecOrMat{<:Real}, 
             forecast::AbstractVecOrMat{<:Real};
-            loss::Function=(y, ŷ)->squared(y, ŷ))
+            loss::Function=(y, x)->squared(y, x))
     n = size(obs, 1)
     @assert n == size(benchmark, 1)
     @assert n == size(forecast, 1)
@@ -22,7 +23,7 @@ end
 function dieboldmariano(obs::AbstractVecOrMat{<:Real},
             benchmark::AbstractArray{<:Real}, 
             forecast::AbstractArray{<:Real};
-            loss::Function=(y, ŷ)->crps(y, ŷ, size(forecast, 3)))
+            loss::Function=(y, x)->crps(y, x, size(forecast, 3)))
     n = size(obs, 1)
     @assert n == size(benchmark, 1)
     @assert n == size(forecast, 1)
