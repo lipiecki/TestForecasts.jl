@@ -34,9 +34,11 @@ The keword argument `loss` must be a function that transform the slice of `obs` 
 However, any user-defined function can be passed as `loss`.
 
 #### Technical details
-`dieboldmariano` uses the sample standard deviation of the loss differences and performs a one-sided test with $H_0$ stating that the loss differential of `benchmark` is higher or equal than that of `forecast`
+The `dieboldmariano` and `giacominiwhite` functions return a p-value for a one-sided test of the null hypothesis that the expected loss of `benchmark` is less than or equal to that of `forecast`.
 
-`giacominiwhite` fixes the instrument lag at one and performs a one-sided test with $H_0$ stating that the loss differential of `benchmark` is higher or equal than that of `forecast`
+`dieboldmariano` uses the sample standard deviation of the loss differences instead of the HAC estimator.
+
+`giacominiwhite` fixes the instrument lag at one.
 
 ### Calibration tests
 - `kupiec(obs, forecast, level)` see [Kupiec (1995)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6697)
