@@ -1,15 +1,18 @@
 module TestForecasts
 
-using Distributions, LinearAlgebra
+using Distributions, LinearAlgebra, Random
 
+include("helpers.jl")
 include("losses.jl")
-
 include("dieboldmariano.jl")
 include("giacominiwhite.jl")
 include("kupiec.jl")
-#TODO: include("mcs.jl") 
+include("mcs.jl")
 
 export
+    # helpers
+    bootstrap,
+
     # losses
     pnorm,
     squared,
@@ -17,10 +20,10 @@ export
     pinball,
     crps,
     aps,
-    
+
     # tests
     dieboldmariano,
     giacominiwhite,
-    kupiec
-    #TODO: mcs
+    kupiec,
+    mcs
 end
