@@ -25,7 +25,6 @@ function mcs(obs::AbstractVecOrMat{<:Real},
     @assert alpha > 0.0 && alpha < 1.0
 
 	bootstrapinds = bootstrap(n, bootstraps, blocksize)
-	outerslice = ntuple(_ -> Colon(), ndims(obs)-1)
 
 	sample_loss = zeros(nmodels)                # raw loss
 	bootstrap_loss = zeros(bootstraps, nmodels) # loss relative to sample
@@ -34,12 +33,12 @@ function mcs(obs::AbstractVecOrMat{<:Real},
 	for m in 1:nmodels
 	    fview = selectdim(forecasts, ndims(forecasts), m)
 	    for i in 1:n
-	        @views sample_loss[m] += loss((obs[i, outerslice...]), fview[i, outerslice...])/n
+	        sample_loss[m] += loss(selectdim(obs, 1, i), selectdim(fview, 1, i))/n
         end
         for b in 1:bootstraps
             inds = @view bootstrapinds[:, b]
             for i in 1:n
-                @views bootstrap_loss[b, m] += loss((obs[inds[i], outerslice...]), fview[inds[i], outerslice...])/n
+                @views bootstrap_loss[b, m] += loss(selectdim(obs, 1, inds[i]), selectdim(fview, 1, inds[i]))/n
             end
             bootstrap_loss[b, m] -= sample_loss[m]
         end
