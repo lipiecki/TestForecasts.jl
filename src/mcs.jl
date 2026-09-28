@@ -24,27 +24,28 @@ function mcs(obs::AbstractVecOrMat{<:Real},
     @assert nmodels > 1
     @assert alpha > 0.0 && alpha < 1.0
 
+	lossvals = Vector{Float64}(undef, n)
 	bootstrapinds = bootstrap(n, bootstraps, blocksize)
-
-	sample_loss = zeros(nmodels)                # raw loss
-	bootstrap_loss = zeros(bootstraps, nmodels) # loss relative to sample
+	sample_loss = Vector{Float64}(undef, nmodels)
+	bootstrap_loss = Matrix{Float64}(undef, bootstraps, nmodels)
 
 	# loss computation
 	for m in 1:nmodels
-	    fview = selectdim(forecasts, ndims(forecasts), m)
-	    for i in 1:n
-	        sample_loss[m] += loss(selectdim(obs, 1, i), selectdim(fview, 1, i))/n
+	    mforecasts = selectdim(forecasts, ndims(forecasts), m)
+		# full sample
+		for i in 1:n
+	        lossvals[i] = loss(selectdim(obs, 1, i), selectdim(mforecasts, 1, i))
         end
+        sample_loss[m] = mean(lossvals)
+
+        # bootstraps
         for b in 1:bootstraps
-            inds = @view bootstrapinds[:, b]
-            for i in 1:n
-                @views bootstrap_loss[b, m] += loss(selectdim(obs, 1, inds[i]), selectdim(fview, 1, inds[i]))/n
-            end
-            bootstrap_loss[b, m] -= sample_loss[m]
+	        @views bootstrap_loss[b, m] = mean(lossvals[bootstrapinds[:, b]])
+			bootstrap_loss[b, m] -= sample_loss[m]
         end
 	end
 
-	# sequential testing
+    # sequential testing
     observed_tstat = Vector{Float64}(undef, nmodels)
     bootstrap_tstat = Matrix{Float64}(undef, bootstraps, nmodels)
     modelsetmask = trues(nmodels)
