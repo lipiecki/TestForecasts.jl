@@ -36,6 +36,7 @@ function mcs(obs::AbstractVecOrMat{<:Real},
 		for i in 1:n
 	        lossvals[i] = loss(selectdim(obs, 1, i), selectdim(mforecasts, 1, i))
         end
+        all(isfinite, lossvals) || throw(ArgumentError("loss must return finite values"))
         sample_loss[m] = mean(lossvals)
 
         # bootstraps
@@ -54,6 +55,10 @@ function mcs(obs::AbstractVecOrMat{<:Real},
         bootstrap_tstat .= bootstrap_loss .- mean(bootstrap_loss[:, modelsetmask], dims=2)
 
         se = mean(bootstrap_tstat .|> abs2, dims=1) .|> sqrt |> vec
+        for i in findall(iszero, se)
+            observed_tstat[i] = iszero(observed_tstat[i]) ? 0.0 : copysign(Inf, observed_tstat[i])
+            se[i] = 1.0
+        end
         observed_tstat ./= se
         bootstrap_tstat ./= se'
 
@@ -61,7 +66,7 @@ function mcs(obs::AbstractVecOrMat{<:Real},
         bootstrap_tstat[:, .!modelsetmask] .= -Inf
 
     	tmax, imax = findmax(observed_tstat)
-    	pval = mean(maximum(bootstrap_tstat, dims=2) .> tmax)
+    	pval = mean(maximum(bootstrap_tstat, dims=2) .>= tmax)
         if pval < alpha
             modelsetmask[imax] = false
         else
